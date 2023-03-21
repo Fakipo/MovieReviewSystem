@@ -1,5 +1,8 @@
     const mongooseConn = require('./library/dbConnection.js');
-   
+    const express = require('express');
+    const app = express();
+    const PORT = 2500;
+
     const userSchema = new mongooseConn.Schema({
         name: String,
         age: Number
@@ -19,3 +22,8 @@
         .catch(err => {
           console.error('Error saving document:', err);
         });
+
+        app.listen(PORT, function(err){
+          if (err) console.log("Error in server setup")
+          console.log("Server listening on Port", PORT);
+      })
