@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 
 import { Link } from 'react-router-dom';
+import { Form, Button } from 'react-bootstrap';
 
+
+import './Navbar.css';
 function Navbar() {
   return (
-    <nav>
+    <nav >
       <ul>
         <li>
           <Link to="/">Home</Link>
@@ -72,7 +75,7 @@ export function HomePage() {
                 Password:
                 <input type = "password" value = {password} onChange = {(event) => setPassword(event.target.value)} />
             </label>
-            <button type = "submit">Submit</button>
+            <button type = "submit">Login</button>
         </form>
     );
 
@@ -136,7 +139,7 @@ export function HomePage() {
             <input type = "date" value = {dateOfBirth} onChange = {(event) => setDateOfBirth(event.target.value)} />
           </label>
           <br />
-          <button type = "submit">Submit</button>
+          <button type = "submit">Sign In</button>
       </form>
     )
   }
