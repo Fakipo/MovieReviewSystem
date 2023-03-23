@@ -79,7 +79,66 @@ export function HomePage() {
 }
   
   export function SignUpPage() {
-    return <h1>Contact us</h1>;
+
+    const [email, setEmail] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [password, setPassword] = useState('');
+    const [dateOfBirth, setDateOfBirth] = useState('');
+
+    const handleSubmitEvent = (e) => {
+      e.preventDefault();
+      console.log('First Name =' + `${firstName}`);
+      fetch('/signup', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          firstName: `${firstName}`,
+          lastName: `${lastName}`,
+          email: `${email}`,
+          password: `${password}`,
+          dateOfBirth: `${dateOfBirth}`
+        })
+      }).then((res)=>res.json())
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((error)=> {
+          console.error(error);
+        })
+    }
+    return (
+      <form onSubmit = {handleSubmitEvent}>
+          <label>
+            First name
+            <input type = 'text' value = {firstName} onChange = {(event) => setFirstName(event.target.value)}/>
+          </label>
+          <br />
+          <label>
+            Last Name
+            <input type = 'text' value = {lastName} onChange = {(event) => setLastName(event.target.value)}/>
+          </label>
+          <br />
+          <label>
+            Email
+            <input type = 'text' value = {email} onChange = {(event) => setEmail(event.target.value)}/>
+          </label>
+          <br />
+          <label>
+            Password
+            <input type = "password" value = {password} onChange = {(event) => setPassword(event.target.value)} />
+          </label>
+          <br />
+          <label>
+            Date Of Birth 
+            <input type = "date" value = {dateOfBirth} onChange = {(event) => setDateOfBirth(event.target.value)} />
+          </label>
+          <br />
+          <button type = "submit">Submit</button>
+      </form>
+    )
   }
   
 export default Navbar;
