@@ -1,7 +1,10 @@
-import React, { useState } from "react";
-
+import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import isLoggedIn from "./helpers/auth.js";
+import { useHistory } from 'react-router-dom';
 
 
 import './Navbar.css';
@@ -12,11 +15,21 @@ function Navbar() {
         <li>
           <Link to="/">Home</Link>
         </li>
+        {isLoggedIn() ? (
+          <li>
+            <Link to="/logout">Logout</Link>
+          </li>
+        ) : (
+          <>
         <li>
           <Link to="/login">Login</Link>
         </li>
         <li>
           <Link to="/signup">Sign Up</Link>
+        </li>
+        </>)}
+        <li>
+          <Link to="/tvshows">Tv shows</Link>
         </li>
       </ul>
     </nav>
@@ -41,34 +54,51 @@ export function HomePage() {
     //     </div>
     // ) 
 
-    const [username, setUsername] = useState(''); 
+    const [email, setEmail] = useState(''); 
     const [password, setPassword] = useState('');
 
     const handleSubmit= (event) => {
-        console.log(`${username}`);
+        console.log(`${email}`);
         console.log(`${password}`);
         event.preventDefault();
-        fetch('/api/formdata', {
+        fetch('/login', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                'username': 'helo',
-                'password': 'password'
+                'email': `${email}`,
+                'password': `${password}`
               })
           })
-          .then(response => response.json())
-          .then(data => console.log(data))
-          .catch(error => console.error(error));
+          .then(response => {
+            if (response.ok) {
+              // user is authenticated, extract the JWT token from the response body
+              // toast.success('Succesfully Logged In');
+              return response.json().then(data => {
+                localStorage.setItem('token', data.token);
+                alert(data['message']);
+                // redirect to the home page or some other protected route
+              });
+            } else {
+              // authentication failed, show an error message
+              return response.json().then(data => {
+                alert(data['message']);
+              });
+              // throw new Error('Authentication failed');
+            }
+          })
+          .catch(error => {
+            alert(error);
+          });
         }
         
 
     return (
         <form onSubmit={handleSubmit}>
             <label>
-                Username:
-                <input type="text" value={username} onChange={(event) => setUsername(event.target.value)} />
+                Email:
+                <input type="text" value={email} onChange={(event) => setEmail(event.target.value)} />
             </label>
             <br />
             <label>
@@ -106,6 +136,11 @@ export function HomePage() {
         })
       }).then((res)=>res.json())
         .then((data) => {
+          if(data['success']){
+            toast.success(data['message']);
+          }else{
+            toast.error(data['message']);
+          }
           console.log(data);
         })
         .catch((error)=> {
@@ -140,8 +175,24 @@ export function HomePage() {
           </label>
           <br />
           <button type = "submit">Sign In</button>
+          <ToastContainer />
       </form>
     )
+  }
+
+  export function Tvshows (){
+    console.log('this code gets  executed');
+    alert('ahoy');
+    return(
+        <h1>Hello Bossman</h1>
+      )
+  }
+
+  export function Logout (){
+    const history = useHistory();
+    localStorage.removeItem('token'); // clear the token from local storage
+    history.push('/home');
+    // redirect to login page
   }
   
 export default Navbar;
