@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from 'react-router-dom';
-import { Form, Button } from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import isLoggedIn from "./helpers/auth.js";
-import { useHistory } from 'react-router-dom';
-
 
 import './Navbar.css';
 function Navbar() {
@@ -42,6 +39,7 @@ export function HomePage() {
     }
   
  export function LoginPage() {
+
     // return (
     //     <div>
     //         <fonrm action = "checkLogin">    
@@ -58,6 +56,11 @@ export function HomePage() {
     const [password, setPassword] = useState('');
 
     const handleSubmit= (event) => {
+        if(isLoggedIn()) {
+          alert('you are already logged in');
+          window.location.href = '/';
+          return;
+        }
         console.log(`${email}`);
         console.log(`${password}`);
         event.preventDefault();
@@ -78,6 +81,7 @@ export function HomePage() {
               return response.json().then(data => {
                 localStorage.setItem('token', data.token);
                 alert(data['message']);
+                window.location.href = '/';
                 // redirect to the home page or some other protected route
               });
             } else {
@@ -189,10 +193,11 @@ export function HomePage() {
   }
 
   export function Logout (){
-    const history = useHistory();
+    alert('succesfully logged out');
     localStorage.removeItem('token'); // clear the token from local storage
-    history.push('/home');
-    // redirect to login page
+    window.location.href = '/';
+    return(
+    <h2></h2>);
   }
   
 export default Navbar;
