@@ -3,8 +3,9 @@
     const app = express();
     const PORT = 3001;
     const bodyParser = require('body-parser');
-    const signUpRouter = require('./models/signUp');
-    const loginRouter = require('./models/login');
+    const signUpRouter = require('./routes/signUp');
+    const loginRouter = require('./routes/login');
+    const tvshowsRouter = require('./routes//tvShows');
     const jwt = require("jsonwebtoken");
     const { JWT_SECRET } = process.env;
 
@@ -26,6 +27,12 @@
         name: String,
         age: Number
       });
+
+      // const myMiddleware = (req, res, next) => {
+      //   // do something
+      //   next();
+      // };
+      // tvshowsRouter.use(myMiddleware);
 
     //   const userModel = mongooseConn.model('user', userSchema, "user"); // The first parameter should be the name of the collection
     
@@ -57,8 +64,9 @@
       //     })
       // });
       app.use('/', signUpRouter);
+      app.use('/', tvshowsRouter);
       app.use('/', loginRouter);
-        app.use(cors(corsOptions));
+      app.use(cors(corsOptions));
         app.listen(PORT, function(err){
           if (err) console.log("Error in server setup")
           console.log("Server listening on Port", PORT);

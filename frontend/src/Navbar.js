@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -132,16 +132,21 @@ export function HomePage() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          firstName: `${firstName}`,
-          lastName: `${lastName}`,
-          email: `${email}`,
-          password: `${password}`,
-          dateOfBirth: `${dateOfBirth}`
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          password: password,
+          dateOfBirth: dateOfBirth
         })
       }).then((res)=>res.json())
         .then((data) => {
           if(data['success']){
-            toast.success(data['message']);
+            toast.success(data['message'], {
+              onClose: () =>{
+                window.location.href = '/login';
+              }
+            });
+           
           }else{
             toast.error(data['message']);
           }
@@ -186,7 +191,31 @@ export function HomePage() {
 
   export function Tvshows (){
     console.log('this code gets  executed');
-    alert('ahoy');
+    useEffect(() => {
+    fetch('/tvshows',
+      {
+        method: 'post',
+        headers: {
+          'Authorization': 'Bearer ' +  localStorage.getItem('token'),
+          'content': 'applicattion/json'
+        }
+      }
+    ).then(response => {
+      if(response.ok){
+        return response.json.then((data) => {
+          alert(data['message']);
+        })
+      }
+      else{
+        alert('Please login and then access');
+        window.location.href = '/';
+
+      }
+
+    }).then(data=> console.log(data))
+    .catch(error => {
+      console.log(error);
+    })}, []);
     return(
         <h1>Hello Bossman</h1>
       )
@@ -194,8 +223,22 @@ export function HomePage() {
 
   export function Logout (){
     alert('succesfully logged out');
-    localStorage.removeItem('token'); // clear the token from local storage
-    window.location.href = '/';
+    fetch('/logout',
+    {
+      method: 'post',
+      headers: {
+        'Authorization': 'Bearer ' +  localStorage.getItem('token'),
+        'content': 'applicattion/json'
+      }
+    }).then((response) => {
+      if(response.ok){
+        localStorage.removeItem('token'); // clear the token from local storage
+        window.location.href = '/';
+      }
+      else{
+        alert('There is an error');
+      }
+    })
     return(
     <h2></h2>);
   }

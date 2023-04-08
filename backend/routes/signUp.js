@@ -3,7 +3,7 @@ const app = require('../index');
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const { userModel } = require('./mongooseModels');
+const { userModel } = require('../models/mongooseModels');
 
 console.log(app);
 
